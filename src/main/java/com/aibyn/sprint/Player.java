@@ -20,12 +20,14 @@ public class Player {
     private final Vector2 velocity;
     private final Circle bounds;
     private boolean isGrounded;
+    private boolean isDead;
 
     public Player(final float x, final float y) {
         position = new Vector2(x, y);
         velocity = new Vector2(0, 0);
         bounds = new Circle(x + RADIUS, y + RADIUS, RADIUS);
         isGrounded = false;
+        isDead = false;
     }
 
     public void update(final float delta, final Level level) {
@@ -49,14 +51,12 @@ public class Player {
             if (velocity.x < -MAX_VELOCITY_X) {
                 velocity.x = -MAX_VELOCITY_X;
             }
-        }
-        else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
+        } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
             velocity.x += ACCELERATION_X * delta;
             if (velocity.x > MAX_VELOCITY_X) {
                 velocity.x = MAX_VELOCITY_X;
             }
-        }
-        else {
+        } else {
             if (velocity.x > 0) {
                 velocity.x = Math.max(0, velocity.x - ACCELERATION_X * delta);
             } else if (velocity.x < 0) {
@@ -117,8 +117,7 @@ public class Player {
         if (dotProduct < 0) {
             if (Math.abs(nx) > 0.7f) {
                 velocity.x = 0;
-            }
-            else if (ny > 0.7f) {
+            } else if (ny > 0.7f) {
                 isGrounded = true;
                 velocity.y = 0;
             } else if (ny < -0.7f) {
@@ -135,6 +134,7 @@ public class Player {
             float distance = CollisionUtils.distance(bounds.x, bounds.y, spike.getHitbox().x, spike.getHitbox().y);
 
             if (distance < bounds.radius + spike.getHitbox().radius) {
+                isDead = true;
                 break;
             }
         }
@@ -155,5 +155,9 @@ public class Player {
 
     public Vector2 getVelocity() {
         return velocity;
+    }
+
+    public boolean isDead() {
+        return isDead;
     }
 }

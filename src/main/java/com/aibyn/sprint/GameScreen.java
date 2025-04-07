@@ -15,7 +15,7 @@ public class GameScreen implements Screen {
     private final Level level;
     private final ShapeRenderer shapeRenderer;
     private final Player player;
-    private final boolean gameOver;
+    private boolean gameOver;
     private boolean victory;
     private float gameOverTimer = 0;
     private float victoryTimer = 0;
@@ -52,6 +52,11 @@ public class GameScreen implements Screen {
         if (!gameOver && !victory) {
             player.update(delta, level);
             gameTimer += delta;
+
+            if (player.isDead()) {
+                gameOver = true;
+                gameOverTimer = 0;
+            }
 
             if (level.getFinishBounds() != null &&
                     CollisionUtils.circleRectangleCollision(player.getBounds(), level.getFinishBounds())) {
